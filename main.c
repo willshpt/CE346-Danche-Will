@@ -4,10 +4,12 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "lsm303agr.h"
 #include "app_timer.h"
 #include "nrf_delay.h"
 #include "led_matrix.h"
 #include "microbit_v2.h"
+#include "nrf_twi_mngr.h"
 #include "nrf.h"
 #include "nrfx_pwm.h"
 #include "nrfx_saadc.h"
@@ -20,6 +22,7 @@
 
 // Global variables
 APP_TIMER_DEF(sample_timer);
+NRF_TWI_MNGR_DEF(twi_mngr_instance, 1, 0);
 
 static void gpio_init(void) {
   // Initialize output pins
@@ -39,14 +42,15 @@ static void gpio_init(void) {
   nrf_gpio_cfg_input(SWITCH_IN, NRF_GPIO_PIN_NOPULL);
 }
 
+// Touch lamp should have it's own hardware interrupt or a much faster timer
 static void sample_timer_callback(void* _unused) {
   if(nrf_gpio_pin_read(SWITCH_IN)){
     //nrf_gpio_pin_clear(LED_BLUE);
-    printf("Switch: ON\n");
+    printf("Switch: OFF\n");
   }
   else{
     //nrf_gpio_pin_set(LED_BLUE);
-    printf("Switch: OFF\n");
+    printf("Switch: ON\n");
   }
 }
 
@@ -56,6 +60,18 @@ int main(void) {
   
   // initialize GPIO
   gpio_init();
+
+  // Initialize I2C peripheral and driver
+  nrf_drv_twi_config_t i2c_config = NRF_DRV_TWI_DEFAULT_CONFIG;
+  i2c_config.scl = I2C_SCL;
+  i2c_config.sda = I2C_SDA;
+  i2c_config.frequency = NRF_TWIM_FREQ_100K;
+  nrf_twi_mngr_init(&twi_mngr_instance, &i2c_config);
+
+  // Initialize the LSM303AGR accelerometer/magnetometer sensor
+  lsm303agr_init(&twi_mngr_instance);
+
+  
 
   // initialize ADC
   //adc_init();
@@ -71,6 +87,10 @@ int main(void) {
 
   // loop forever
   while (1) {
+    printf("Temp: %f\n", lsm303agr_read_temperature());
+    printf("AccX: %f\n", lsm303agr_read_accelerometer().x_axis);
+    printf("AccY: %f\n", lsm303agr_read_accelerometer().y_axis);
+    printf("AccZ: %f\n", lsm303agr_read_accelerometer().z_axis);
     // Don't put any code in here. Instead put periodic code in `sample_timer_callback()`
     nrf_delay_ms(1000);
   }
