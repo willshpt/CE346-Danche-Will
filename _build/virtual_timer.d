@@ -1,4 +1,4 @@
-_build/main.o: main.c \
+_build/virtual_timer.o: virtual_timer.c \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1/include/stdbool.h \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1/include/stdint.h \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/stdint.h \
@@ -32,11 +32,9 @@ _build/main.o: main.c \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/sys/sched.h \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/machine/types.h \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/sys/stdio.h \
- /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/math.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/timer/app_timer.h \
- ../../nrf52x-base//make/config/nrf52833/config/sdk_config.h \
- /home/will/Desktop/nu-microbit-base/software/boards/microbit_v2/./app_config.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/app_error.h \
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/stdlib.h \
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/machine/stdlib.h \
+ /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/alloca.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf52833.h \
  ../../nrf52x-base//lib/CMSIS_5/CMSIS/Core/Include/core_cm4.h \
@@ -50,40 +48,4 @@ _build/main.o: main.c \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf52_to_nrf52833.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf51_to_nrf52.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/compiler_abstraction.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/sdk_errors.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/drivers_nrf/nrf_soc_nosd/nrf_error.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/nordic_common.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/app_error_weak.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/app_util.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/compiler_abstraction.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/nordic_common.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/delay/nrf_delay.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/nrfx.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/integration/nrfx/nrfx_config.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/nrfx_common.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf_peripherals.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf52833_peripherals.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/integration/nrfx/nrfx_glue.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/integration/nrfx/legacy/apply_old_config.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/soc/nrfx_irqs.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/soc/nrfx_irqs_nrf52833.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/nrf_assert.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/app_util_platform.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/nrf_assert.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/app_error.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/soc/nrfx_coredep.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/soc/nrfx_atomic.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/sdk_errors.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/sdk_resources.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/nrfx_errors.h \
- led_matrix.h \
- /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/string.h \
- /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/sys/_locale.h \
- /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/strings.h \
- /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/sys/string.h \
- /home/will/Desktop/nu-microbit-base/software/boards/microbit_v2/./microbit_v2.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_gpio.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/include/nrfx_pwm.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_pwm.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/include/nrfx_saadc.h \
- ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_saadc.h
+ virtual_timer.h virtual_timer_linked_list.h

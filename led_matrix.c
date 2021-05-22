@@ -15,25 +15,9 @@
 APP_TIMER_DEF(my_timer_1);
 uint8_t led_states[5] = {0xff, 0xff, 0xff, 0xff, 0xff};
 uint8_t current_row = 0;
-char *string;
-int current_char;
 
-void print_string(char* str, double letter_delay){
-  current_char = 0;
-  if(str[current_char] != 0){
-    string = str;
-    // New timer
-  }
-}
-
-void print_char(){
-  if(string[current_char] != 0){
-    update_matrix(font[string[current_char]]);
-    current_char++;
-  }
-  else{
-    // End timer
-  }
+void print_char(char c){
+  update_matrix(font[c]);
 }
 
 void update_matrix(uint8_t thingmatrix[5]){
@@ -89,6 +73,10 @@ void update_leds(){
   }
 }
 
+static void led0_toggle(void* _unused) {
+    update_leds();
+}
+
 void led_matrix_init(void) {
   // initialize row pins
   nrf_gpio_pin_dir_set(LED_ROW1, NRF_GPIO_PIN_DIR_OUTPUT);
@@ -122,8 +110,8 @@ void led_matrix_init(void) {
 
   // initialize timer(s) (Part 3 and onwards)
   app_timer_init();
-  app_timer_create(&led_timer, APP_TIMER_MODE_REPEATED, update_leds);
-  app_timer_start(led_timer, 32, NULL);
+  app_timer_create(&my_timer_1, APP_TIMER_MODE_REPEATED, led0_toggle);
+  app_timer_start(my_timer_1, 32, NULL);
   // set default state for the LED display (Part 4 and onwards)
 }
 
