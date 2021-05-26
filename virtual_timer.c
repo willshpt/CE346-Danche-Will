@@ -71,6 +71,7 @@ void virtual_timer_init(void) {
   NRF_TIMER4->PRESCALER = 4; // f=16/(2^prescaler)
   NRF_TIMER4->INTENSET = 1 << 21; // Channel 5
   NVIC_EnableIRQ(TIMER4_IRQn);
+  NVIC_SetPriority(TIMER4_IRQn, 4);
   NRF_TIMER4->TASKS_CLEAR = 1;
   NRF_TIMER4->TASKS_START = 1;
 }
