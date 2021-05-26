@@ -20,6 +20,18 @@ static const nrf_twi_mngr_t* i2c_manager = NULL;
 // reg_addr - address of the register within the device to read
 //
 // returns 8-bit read value
+static uint8_t i2c_reg_read_init(uint8_t i2c_addr, uint8_t reg_addr) {
+  uint8_t rx_buf = 0;
+  nrf_twi_mngr_transfer_t const read_transfer[] = {
+    //implement me
+    NRF_TWI_MNGR_WRITE(i2c_addr, &reg_addr, 1, NRF_TWI_MNGR_NO_STOP),
+    NRF_TWI_MNGR_READ(i2c_addr, &rx_buf, 1, 0)
+  };
+
+  nrf_twi_mngr_perform(i2c_manager, NULL, read_transfer, 2, NULL);
+  return rx_buf;
+}
+
 static uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr) {
   uint8_t rx_buf = 0;
   nrf_twi_mngr_transfer_t const read_transfer[] = {
@@ -27,8 +39,18 @@ static uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr) {
     NRF_TWI_MNGR_WRITE(i2c_addr, &reg_addr, 1, NRF_TWI_MNGR_NO_STOP),
     NRF_TWI_MNGR_READ(i2c_addr, &rx_buf, 1, 0)
   };
-  nrf_twi_mngr_perform(i2c_manager, NULL, read_transfer, 2, NULL);
 
+   nrf_twi_mngr_transaction_t trans = {
+				      .callback = NULL,
+				      .p_user_data = NULL,
+				      .p_transfers = read_transfer,
+				      .number_of_transfers = 2,
+				      .p_required_twi_cfg = NULL
+				      }; 
+  
+  //nrf_twi_mngr_perform(i2c_manager, NULL, read_transfer, 2, NULL);
+
+  APP_ERROR_CHECK(nrf_twi_mngr_schedule(i2c_manager, &trans));
   return rx_buf;
 }
 
@@ -69,7 +91,7 @@ void lsm303agr_init(const nrf_twi_mngr_t* i2c) {
 
   // Read WHO AM I register
   // Always returns the same value if working
-  uint8_t result = i2c_reg_read(LSM303AGR_ACC_ADDRESS, LSM303AGR_ACC_WHO_AM_I_REG);
+  uint8_t result = i2c_reg_read_init(LSM303AGR_ACC_ADDRESS, LSM303AGR_ACC_WHO_AM_I_REG);
   //check the result of the Accelerometer WHO AM I register
   if(result == 0x33){
     printf("Correct Accelerometer Whoami\n");
@@ -78,7 +100,7 @@ void lsm303agr_init(const nrf_twi_mngr_t* i2c) {
   else{
     printf("Incorrect Accelerometer Whoami, got value %x\n", result);
     for(int i = 0; i <= 0x6f; i++){
-      uint8_t testy = i2c_reg_read(LSM303AGR_ACC_ADDRESS, i);
+      uint8_t testy = i2c_reg_read_init(LSM303AGR_ACC_ADDRESS, i);
       if(testy != 0){
         printf("Register: %x = %x \n", i, testy);
       }
@@ -99,7 +121,7 @@ void lsm303agr_init(const nrf_twi_mngr_t* i2c) {
   i2c_reg_write(LSM303AGR_MAG_ADDRESS, LSM303AGR_MAG_CFG_REG_A, 0x0C);
 
   // Read WHO AM I register
-  result = i2c_reg_read(LSM303AGR_MAG_ADDRESS, LSM303AGR_MAG_WHO_AM_I_REG);
+  result = i2c_reg_read_init(LSM303AGR_MAG_ADDRESS, LSM303AGR_MAG_WHO_AM_I_REG);
   //check the result of the Magnetometer WHO AM I register
   if((result) == 0x40){
     printf("Correct Magnetometer Whoami\n");
@@ -107,7 +129,7 @@ void lsm303agr_init(const nrf_twi_mngr_t* i2c) {
   else{
     printf("Incorrect Magnetometer Whoami, got value %x\n", (uint8_t)result);
     for(uint8_t i = 0; i < 0x6f; i++){
-      uint16_t testy = i2c_reg_read(LSM303AGR_MAG_ADDRESS, i);
+      uint16_t testy = i2c_reg_read_init(LSM303AGR_MAG_ADDRESS, i);
       if(testy != 0){
         printf("Register: %x = %x \n", i, testy);
       }

@@ -9,6 +9,7 @@
 #include "nrf_delay.h"
 #include "led_matrix.h"
 #include "microbit_v2.h"
+#include "virtual_timer.h"
 #include "nrf_twi_mngr.h"
 #include "nrf.h"
 #include "nrfx_pwm.h"
@@ -54,6 +55,9 @@ static void sample_timer_callback(void* _unused) {
   }
 }
 
+static void check_temp(void) {
+   printf("Temp: %f\n", lsm303agr_read_temperature());
+}
 
 int main(void) {
   printf("Board started!\n");
@@ -84,13 +88,15 @@ int main(void) {
   // change the rate to whatever you want
   app_timer_start(sample_timer, 32768, NULL);
 
+  virtual_timer_init();
+  virtual_timer_start_repeated(1000000, check_temp);
 
   // loop forever
   while (1) {
-    printf("Temp: %f\n", lsm303agr_read_temperature());
-    printf("AccX: %f\n", lsm303agr_read_accelerometer().x_axis);
-    printf("AccY: %f\n", lsm303agr_read_accelerometer().y_axis);
-    printf("AccZ: %f\n", lsm303agr_read_accelerometer().z_axis);
+    // printf("Temp: %f\n", lsm303agr_read_temperature());
+    // printf("AccX: %f\n", lsm303agr_read_accelerometer().x_axis);
+    // printf("AccY: %f\n", lsm303agr_read_accelerometer().y_axis);
+    // printf("AccZ: %f\n", lsm303agr_read_accelerometer().z_axis);
     // Don't put any code in here. Instead put periodic code in `sample_timer_callback()`
     nrf_delay_ms(1000);
   }
