@@ -11,6 +11,10 @@
 #include "lsm303agr.h"
 #include "nrf_delay.h"
 
+
+float TEMP;
+lsm303agr_measurement_t ACCEL;
+
 // Pointer to an initialized I2C instance to use for transactions
 static const nrf_twi_mngr_t* i2c_manager = NULL;
 
@@ -136,9 +140,9 @@ float lsm303agr_read_temperature(void) {
   lowX = i2c_reg_read(LSM303AGR_ACC_ADDRESS, LSM303AGR_ACC_TEMP_L);
   highX = i2c_reg_read(LSM303AGR_ACC_ADDRESS, LSM303AGR_ACC_TEMP_H);
   int16_t X = lowX + ((uint16_t)highX << 8);
-  float temp = ((float)X)/256 + 25;
+  TEMP = ((float)X)/256 + 25;
 
-  return temp;
+  return TEMP;
 }
 
 lsm303agr_measurement_t lsm303agr_read_accelerometer(void) {
@@ -148,12 +152,15 @@ lsm303agr_measurement_t lsm303agr_read_accelerometer(void) {
   int16_t y_raw = ((int16_t)((uint16_t)i2c_reg_read(LSM303AGR_ACC_ADDRESS, LSM303AGR_ACC_OUT_Y_L) | ((uint16_t)i2c_reg_read(LSM303AGR_ACC_ADDRESS, LSM303AGR_ACC_OUT_Y_H) << 8))) >> 6;
   //printf("%x\n", y_raw);
   int16_t z_raw = ((int16_t)((uint16_t)i2c_reg_read(LSM303AGR_ACC_ADDRESS, LSM303AGR_ACC_OUT_Z_L) + ((uint16_t)i2c_reg_read(LSM303AGR_ACC_ADDRESS, LSM303AGR_ACC_OUT_Z_H) << 8))) >> 6;
-  float x = ((float)x_raw * 3.9)/1000;
+  /*float x = ((float)x_raw * 3.9)/1000;
   float y = ((float)y_raw * 3.9) * .001;
-  float z = ((float)((float)z_raw * 3.9))/1000;
+  float z = ((float)((float)z_raw * 3.9))/1000;*/
+  ACCEL.x_axis = ((float)x_raw * 3.9)/1000;
+  ACCEL.y_axis = ((float)y_raw * 3.9) * .001;
+  ACCEL.z_axis = ((float)((float)z_raw * 3.9))/1000;
 
-  lsm303agr_measurement_t measurement = {x, y, z};
-  return measurement;
+  // lsm303agr_measurement_t measurement = {x, y, z};
+  return ACCEL;
 }
 
 lsm303agr_measurement_t lsm303agr_read_tilt(void) {

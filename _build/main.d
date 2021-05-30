@@ -92,10 +92,10 @@ _build/main.o: main.c \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/timer/app_timer.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/app_error.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/delay/nrf_delay.h \
- led_matrix.h \
+ led_matrix.h virtual_timer.h \
  /home/smilkova/Desktop/ce346project/nu-microbit-base/software/boards/microbit_v2/./microbit_v2.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_gpio.h \
- virtual_timer.h \
+ virtual_timer_linked_list.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/include/nrfx_pwm.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_pwm.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/include/nrfx_saadc.h \

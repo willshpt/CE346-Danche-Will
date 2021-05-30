@@ -80,6 +80,10 @@ typedef enum {
   LSM303AGR_MAG_OUT_Z_H_REG = 0X6D,
 } lsm303agr_mag_reg_t;
 
+// global variables
+extern float TEMP;
+extern lsm303agr_measurement_t ACCEL;
+
 // Function prototypes
 
 // Initialize and configure the LSM303AGR accelerometer/magnetometer

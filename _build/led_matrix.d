@@ -80,5 +80,5 @@ _build/led_matrix.o: led_matrix.c \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/sys/_locale.h \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/strings.h \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/sys/string.h \
- font.h \
+ virtual_timer.h font.h \
  /home/smilkova/Desktop/ce346project/nu-microbit-base/software/boards/microbit_v2/./microbit_v2.h

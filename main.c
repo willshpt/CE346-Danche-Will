@@ -10,6 +10,7 @@
 #include "led_matrix.h"
 #include "microbit_v2.h"
 #include "virtual_timer.h"
+#include "virtual_timer_linked_list.h"
 #include "nrf_twi_mngr.h"
 #include "nrf.h"
 #include "nrfx_pwm.h"
@@ -56,7 +57,17 @@ static void sample_timer_callback(void* _unused) {
 }
 
 static void check_temp(void) {
-   printf("Temp: %f\n", lsm303agr_read_temperature());
+  printf("Temp: %f\n", lsm303agr_read_temperature());
+  //lsm303agr_read_temperature();
+   //list_print();
+}
+
+static void print_temp(void) {
+  //char str[6];
+  snprintf(string, sizeof(string), "%.2f", TEMP);
+  //printf("temp char: %s \n", string);
+  led_str();
+  //led_str("hi");
 }
 
 int main(void) {
@@ -76,7 +87,8 @@ int main(void) {
   // Initialize the LSM303AGR accelerometer/magnetometer sensor
   lsm303agr_init(&twi_mngr_instance);
 
-  
+  // initialize LED matrix
+  led_matrix_init();
 
   // initialize ADC
   //adc_init();
@@ -87,10 +99,12 @@ int main(void) {
 
   // start timer
   // change the rate to whatever you want
-  app_timer_start(sample_timer, 32768, NULL);
+  app_timer_start(sample_timer, 0.5*32768, NULL);
 
   virtual_timer_init();
   virtual_timer_start_repeated(1000000, check_temp);
+  virtual_timer_start_repeated(20000000, print_temp);
+  
 
   // loop forever
   while (1) {
