@@ -44,7 +44,7 @@ static void gpio_init(void) {
   nrf_gpio_cfg_input(SWITCH_IN, NRF_GPIO_PIN_NOPULL);
 }
 
-// Touch lamp should have it's own hardware interrupt or a much faster timer
+// Touch lamp should have it's own hardware interrupt or a much faster timer- moving to interrupt
 static void sample_timer_callback(void* _unused) {
   if(nrf_gpio_pin_read(SWITCH_IN)){
     //nrf_gpio_pin_clear(LED_BLUE);
@@ -56,18 +56,21 @@ static void sample_timer_callback(void* _unused) {
   }
 }
 
-static void check_temp(void) {
-  printf("Temp: %f\n", lsm303agr_read_temperature());
+// Callback function to check the temperature
+static void check_temp_and_accel(void) {
+  printf("Temp: %f\n", lsm303agr_read_temperature()); // For Debugging
+  lsm303agr_read_temperature();
+  lsm303agr_read_accelerometer();
   //lsm303agr_read_temperature();
    //list_print();
 }
 
+// Callback function to print the temperature on the LED matrix
 static void print_temp(void) {
-  //char str[6];
-  snprintf(string, sizeof(string), "%.2f", TEMP);
-  //printf("temp char: %s \n", string);
-  led_str();
-  //led_str("hi");
+  //printf("PRINTING...\n");
+  char str[50];
+  snprintf(str, sizeof(str), "%.2f  ", TEMP); // Prints with 2 spaces to make the end longer
+  new_print_string(str);
 }
 
 int main(void) {
@@ -102,18 +105,20 @@ int main(void) {
   app_timer_start(sample_timer, 0.5*32768, NULL);
 
   virtual_timer_init();
-  virtual_timer_start_repeated(1000000, check_temp);
-  virtual_timer_start_repeated(20000000, print_temp);
+  nrf_delay_ms(1000);
+  virtual_timer_start_repeated(1000000, check_temp_and_accel);
+  virtual_timer_start_repeated(2000000, print_temp);
+  // Start off by doing an initialized printing of the temp
+  char str[50];
+  snprintf(str, sizeof(str), "%.2f  ", TEMP);
+  init_print_string(str, 0.5);
   
 
   // loop forever
   while (1) {
-    // printf("Temp: %f\n", lsm303agr_read_temperature());
-    // printf("AccX: %f\n", lsm303agr_read_accelerometer().x_axis);
-    // printf("AccY: %f\n", lsm303agr_read_accelerometer().y_axis);
-    // printf("AccZ: %f\n", lsm303agr_read_accelerometer().z_axis);
     // Don't put any code in here. Instead put periodic code in `sample_timer_callback()`
     nrf_delay_ms(1000);
+    //list_print();
   }
 }
 

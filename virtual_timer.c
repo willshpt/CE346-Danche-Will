@@ -11,14 +11,16 @@
 #include "virtual_timer_linked_list.h"
 
 void interrupt_helper(node_t *node){
-  node->my_callback_variable();
-  if((node->is_repeated)){
-    NRF_TIMER4->TASKS_CAPTURE[5] = 1;
-    node->timer_value = NRF_TIMER4->CC[5] + node->micros;
-    list_insert_sorted(node);
-  }
-  else{
-    free(node);
+  if(node != NULL){
+    node->my_callback_variable();
+    if((node->is_repeated)){
+      NRF_TIMER4->TASKS_CAPTURE[1] = 1;
+      node->timer_value = NRF_TIMER4->CC[1] + node->micros;
+      list_insert_sorted(node);
+    }
+    else{
+      free(node);
+    }
   }
 }
 
@@ -31,17 +33,22 @@ void TIMER4_IRQHandler(void) {
   bool notdone = true;
   uint32_t temptime = 0;
   // The following while loop deals with multiple timers happening in a short period of time
+  __disable_irq();
   while (notdone){
-    __disable_irq();
     interrupt_helper(list_remove_first());
-    __enable_irq();
-    temptime = list_get_first()->timer_value;
-    NRF_TIMER4->TASKS_CAPTURE[5] = 1;
-    if(temptime > NRF_TIMER4->CC[5]){
-      NRF_TIMER4->CC[5] = temptime;
+    if(list_get_first() != NULL){
+      temptime = list_get_first()->timer_value;
+      NRF_TIMER4->TASKS_CAPTURE[1] = 1;
+      if(temptime - 10 > NRF_TIMER4->CC[1]){
+        NRF_TIMER4->CC[5] = temptime;
+        notdone = false;
+      }
+    }
+    else{
       notdone = false;
     }
   }
+  __enable_irq();
 
   // Place your interrupt handler code here
   
@@ -71,7 +78,7 @@ void virtual_timer_init(void) {
   NRF_TIMER4->PRESCALER = 4; // f=16/(2^prescaler)
   NRF_TIMER4->INTENSET = 1 << 21; // Channel 5
   NVIC_EnableIRQ(TIMER4_IRQn);
-  NVIC_SetPriority(TIMER4_IRQn, 4);
+  NVIC_SetPriority(TIMER4_IRQn, 3);
   NRF_TIMER4->TASKS_CLEAR = 1;
   NRF_TIMER4->TASKS_START = 1;
 }
@@ -94,8 +101,8 @@ void virtual_timer_init(void) {
 static uint32_t timer_start(uint32_t microseconds, virtual_timer_callback_t cb, bool repeated) {
   __disable_irq();
   node_t* node = malloc(sizeof(node_t));
-  NRF_TIMER4->TASKS_CAPTURE[5] = 1;
-  node->timer_value = NRF_TIMER4->CC[5] + microseconds;
+  NRF_TIMER4->TASKS_CAPTURE[1] = 1;
+  node->timer_value = NRF_TIMER4->CC[1] + microseconds;
   node->micros = microseconds;
   node->my_callback_variable = cb;
   node->is_repeated = repeated;
@@ -103,6 +110,7 @@ static uint32_t timer_start(uint32_t microseconds, virtual_timer_callback_t cb, 
   NRF_TIMER4->CC[5] = list_get_first()->timer_value;
   __enable_irq();
   // Return a unique timer ID. (hint: What is guaranteed unique about the timer you have created?)
+  //printf("%x", (uint32_t)node);
   return (uint32_t)node;
 }
 

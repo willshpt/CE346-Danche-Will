@@ -43,7 +43,7 @@ void list_insert_sorted(node_t* node) {
             // node is somewhere after the head
             node_t* prev_node = linked_list;
             node_t* curr_node = linked_list->next;
-            while (curr_node != NULL && curr_node->timer_value < node->timer_value) {
+            while (curr_node != NULL && curr_node->timer_value <= node->timer_value) {
                 // iterate until end of list or the current node has a greater value
                 prev_node = curr_node;
                 curr_node = curr_node->next;
