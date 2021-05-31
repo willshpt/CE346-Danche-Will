@@ -88,7 +88,9 @@ void update_matrix(uint8_t thingmatrix[5]){
   led_states[4] = thingmatrix[4];
 }
 
+// Updates LEDs
 void update_leds(){
+  // Starts with a switch statement to turn off the previous row
   switch(current_row) {
     case 0 :
       nrf_gpio_pin_clear(LED_ROW5);
@@ -106,11 +108,13 @@ void update_leds(){
       nrf_gpio_pin_clear(LED_ROW4);
       break;
   }
+  // Then fills out each column while all rows are hidden
   nrf_gpio_pin_write(LED_COL1, !(led_states[current_row] & 0b00001));
   nrf_gpio_pin_write(LED_COL2, !(led_states[current_row] & 0b00010));
   nrf_gpio_pin_write(LED_COL3, !(led_states[current_row] & 0b00100));
   nrf_gpio_pin_write(LED_COL4, !(led_states[current_row] & 0b01000));
   nrf_gpio_pin_write(LED_COL5, !(led_states[current_row] & 0b10000));
+  // Then one final switch statement to show the current row after the change
   switch(current_row) {
     case 0 :
       nrf_gpio_pin_set(LED_ROW1);
@@ -128,15 +132,13 @@ void update_leds(){
       nrf_gpio_pin_set(LED_ROW5);
       break;
   }
+  // Finally, update the row in a loop
   if(++current_row > 4){
     current_row = 0;
   }
 }
 
-static void led0_toggle(void* _unused) {
-    update_leds();
-}
-
+// Initialize the LED matrix
 void led_matrix_init(void) {
   // initialize row pins
   nrf_gpio_pin_dir_set(LED_ROW1, NRF_GPIO_PIN_DIR_OUTPUT);
@@ -162,14 +164,7 @@ void led_matrix_init(void) {
   nrf_gpio_pin_clear(LED_COL4);
   nrf_gpio_pin_clear(LED_COL5);
 
-  // set default values for pins
-  // To activate an LED, ensure that its corresponding row 
-  // pin is high and its corresponding column pin is low
-  //nrf_gpio_pin_set(LED_ROW1);
-  //nrf_gpio_pin_set(LED_COL3);
-
-  // initialize timer(s) (Part 3 and onwards)
-  //virtual_timer_init();
+  // Switched to virtual timer to make sure it all works together
   virtual_timer_start_repeated(32, update_leds);
   //app_timer_init();
   //app_timer_create(&my_timer_1, APP_TIMER_MODE_REPEATED, led0_toggle);

@@ -14,6 +14,7 @@
 
 float TEMP;
 lsm303agr_measurement_t ACCEL;
+lsm303agr_measurement_t TILT;
 
 // Pointer to an initialized I2C instance to use for transactions
 static const nrf_twi_mngr_t* i2c_manager = NULL;
@@ -168,11 +169,10 @@ lsm303agr_measurement_t lsm303agr_read_tilt(void) {
   float phi = atan((sqrt((accelmeasure.x_axis)*(accelmeasure.x_axis) + (accelmeasure.y_axis)*(accelmeasure.y_axis)))/(accelmeasure.z_axis));
   float psi = atan((accelmeasure.y_axis)/(sqrt((accelmeasure.x_axis)*(accelmeasure.x_axis) + (accelmeasure.z_axis)*(accelmeasure.z_axis))));
   float theta = atan((accelmeasure.x_axis)/(sqrt((accelmeasure.y_axis)*(accelmeasure.y_axis) + (accelmeasure.z_axis)*(accelmeasure.z_axis))));
-  phi = phi * 180 / M_PI;
-  psi = psi * 180 / M_PI;
-  theta = theta * 180 / M_PI;
-  lsm303agr_measurement_t measurement = {theta, psi, phi};
-  return measurement;
+  TILT.z_axis = phi * 180 / M_PI;
+  TILT.y_axis = psi * 180 / M_PI;
+  TILT.x_axis = theta * 180 / M_PI;
+  return TILT;
 }
 
 lsm303agr_measurement_t lsm303agr_read_magnetometer(void) {

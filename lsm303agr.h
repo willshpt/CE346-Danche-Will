@@ -83,6 +83,7 @@ typedef enum {
 // global variables
 extern float TEMP;
 extern lsm303agr_measurement_t ACCEL;
+extern lsm303agr_measurement_t TILT;
 
 // Function prototypes
 

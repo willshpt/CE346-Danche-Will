@@ -39,6 +39,7 @@ void TIMER4_IRQHandler(void) {
     if(list_get_first() != NULL){
       temptime = list_get_first()->timer_value;
       NRF_TIMER4->TASKS_CAPTURE[1] = 1;
+      // NOTE: This has extra leeway because it was causing issues before
       if(temptime - 10 > NRF_TIMER4->CC[1]){
         NRF_TIMER4->CC[5] = temptime;
         notdone = false;
