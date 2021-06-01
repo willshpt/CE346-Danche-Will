@@ -25,7 +25,7 @@ _build/lsm303agr.o: lsm303agr.c \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/nrfx.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/integration/nrfx/nrfx_config.h \
  ../../nrf52x-base//make/config/nrf52833/config/sdk_config.h \
- /home/will/Desktop/nu-microbit-base/software/boards/microbit_v2/./app_config.h \
+ /home/smilkova/Desktop/ce346project/nu-microbit-base/software/boards/microbit_v2/./app_config.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/nrfx_common.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf52833.h \

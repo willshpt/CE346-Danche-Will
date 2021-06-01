@@ -75,7 +75,8 @@ static void play_tone(uint16_t frequency) {
   sequence_data[0] = (NRF_PWM0->COUNTERTOP)/2;
 
   // Start playback of the samples and loop indefinitely
-  nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, NRFX_PWM_FLAG_LOOP);
+  // nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, NRFX_PWM_FLAG_LOOP);
+  nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, 0);
 }
 
 static void gpio_init(void) {
@@ -95,13 +96,14 @@ static void gpio_init(void) {
 
 // TODO: Take everything in here and change it to a toggle on/off system and use an interrupt
 static void sample_timer_callback(void* _unused) {
-  if(nrf_gpio_pin_read(SWITCH_IN)){
-    light_on = false;
-    printf("Switch: OFF\n");
-  }
-  else{
-    light_on = true;
-    printf("Switch: ON\n");
+  if(!nrf_gpio_pin_read(SWITCH_IN)){
+    if (light_on) {
+      light_on = false;
+      printf("Switch: OFF\n");
+    } else {
+      light_on = true;
+      printf("Switch: ON\n");
+    }
   }
 }
 
@@ -112,14 +114,16 @@ static void check_temp_and_accel(void) {
   lsm303agr_read_temperature();
   lsm303agr_read_tilt();
   // Check accelerometer for large tilt- set off alarm if too much tilt
-  if(abs((int)(tempval.z_axis - TILT.z_axis)) > 45){
-    printf("%f, %f", tempval.z_axis, TILT.z_axis);
-    while(nrf_gpio_pin_read(SWITCH_IN)){
+    if(abs((int)(tempval.z_axis - TILT.z_axis)) > 20){
+    printf("tilt: %f, %f \n", tempval.z_axis, TILT.z_axis);
+    // while(nrf_gpio_pin_read(SWITCH_IN)){
+    while (abs((int)(tempval.z_axis - TILT.z_axis)) > 20){
       play_tone(554);
       nrf_delay_ms(500);
       play_tone(659);
       nrf_delay_ms(500);
-    }
+      lsm303agr_read_tilt();
+       }
     nrfx_pwm_stop(&PWM_INST, true);
   }
 
@@ -132,13 +136,13 @@ static void check_temp_and_accel(void) {
   // If the lamp is on, it changes depending on how hot it is
   else{
     nrf_gpio_pin_clear(LED_BLUE);
-    if(TEMP > 27){
+    if(TEMP > 25){
       nrf_gpio_pin_clear(LED_GREEN);
     }
     else{
       nrf_gpio_pin_set(LED_GREEN);
     }
-    if(TEMP > 35){
+    if(TEMP > 28){
       nrf_gpio_pin_clear(LED_RED);
     }
     else{
