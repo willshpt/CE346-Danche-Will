@@ -14,6 +14,8 @@
 #include "virtual_timer.h"
 #include "virtual_timer_linked_list.h"
 #include "nrf_twi_mngr.h"
+#include "nrf_gpiote.h"
+#include "nrf_drv_gpiote.h"
 #include "nrf.h"
 #include "nrfx_pwm.h"
 #include "nrfx_saadc.h"
@@ -27,7 +29,7 @@
 bool light_on = false;
 
 // Global variables
-APP_TIMER_DEF(sample_timer);
+//APP_TIMER_DEF(sample_timer);
 NRF_TWI_MNGR_DEF(twi_mngr_instance, 1, 0);
 
 // PWM configuration
@@ -75,9 +77,22 @@ static void play_tone(uint16_t frequency) {
   sequence_data[0] = (NRF_PWM0->COUNTERTOP)/2;
 
   // Start playback of the samples and loop indefinitely
-  // nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, NRFX_PWM_FLAG_LOOP);
-  nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, 0);
+   nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, NRFX_PWM_FLAG_LOOP);
 }
+
+// TODO: Take everything in here and change it to a toggle on/off system and use an interrupt
+//static void sample_timer_callback(void* _unused) {
+static void interrupt_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action){
+  //nrf_gpiote_event_clear(NRF_GPIOTE_EVENTS_IN_0);
+    if (light_on) {
+      light_on = false;
+      printf("Switch: OFF\n");
+    } else {
+      light_on = true;
+      printf("Switch: ON\n");
+    }
+}
+
 
 static void gpio_init(void) {
   // Initialize output pins
@@ -90,22 +105,23 @@ static void gpio_init(void) {
   nrf_gpio_pin_set(LED_BLUE);
   nrf_gpio_pin_set(LED_GREEN);
 
+  ret_code_t err_code = nrf_drv_gpiote_init();
+  APP_ERROR_CHECK(err_code);
+
+  nrf_drv_gpiote_in_config_t pin_config = GPIOTE_CONFIG_IN_SENSE_LOTOHI(true);
+  pin_config.pull = NRF_GPIO_PIN_PULLDOWN;
+
   // Initializes input pins
-  nrf_gpio_cfg_input(SWITCH_IN, NRF_GPIO_PIN_NOPULL);
+  //nrf_gpio_cfg_input(SWITCH_IN, NRF_GPIO_PIN_NOPULL);
+  err_code = nrf_drv_gpiote_in_init(SWITCH_IN, &pin_config, interrupt_handler);
+  APP_ERROR_CHECK(err_code);
+  nrf_drv_gpiote_in_event_enable(SWITCH_IN, true);
+  //nrf_gpiote_int_enable(NRF_GPIOTE_INT_IN0_MASK);
+  //nrf_gpiote_event_configure(NRF_GPIOTE_EVENTS_IN_0, SWITCH_IN, NRF_GPIOTE_POLARITY_LOTOHI); 
+  NVIC_EnableIRQ(GPIOTE_IRQn);
+  NVIC_SetPriority(GPIOTE_IRQn, 2);
 }
 
-// TODO: Take everything in here and change it to a toggle on/off system and use an interrupt
-static void sample_timer_callback(void* _unused) {
-  if(!nrf_gpio_pin_read(SWITCH_IN)){
-    if (light_on) {
-      light_on = false;
-      printf("Switch: OFF\n");
-    } else {
-      light_on = true;
-      printf("Switch: ON\n");
-    }
-  }
-}
 
 // Callback function to check the temperature
 static void check_temp_and_accel(void) {
@@ -183,11 +199,11 @@ int main(void) {
 
   // initialize app timers
   app_timer_init();
-  app_timer_create(&sample_timer, APP_TIMER_MODE_REPEATED, sample_timer_callback);
+  //app_timer_create(&sample_timer, APP_TIMER_MODE_REPEATED, sample_timer_callback);
 
   // start timer
   // change the rate to whatever you want
-  app_timer_start(sample_timer, 0.5*32768, NULL);
+  //app_timer_start(sample_timer, 0.5*32768, NULL);
 
   // Initialize and start virtual timers
   virtual_timer_init();

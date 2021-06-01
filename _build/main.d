@@ -96,6 +96,11 @@ _build/main.o: main.c \
  /home/smilkova/Desktop/ce346project/nu-microbit-base/software/boards/microbit_v2/./microbit_v2.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_gpio.h \
  virtual_timer.h virtual_timer_linked_list.h \
+ ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_gpiote.h \
+ ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/integration/nrfx/legacy/nrf_drv_gpiote.h \
+ ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/include/nrfx_gpiote.h \
+ ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_gpiote.h \
+ ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_gpio.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/include/nrfx_pwm.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_pwm.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/include/nrfx_saadc.h \
