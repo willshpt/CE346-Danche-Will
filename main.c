@@ -1,6 +1,3 @@
-// TODO: Touch support (Definitely change to interrupts and make it toggleable, maybe also make change to capacitive instead of resistive)
-
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
