@@ -27,6 +27,8 @@
 #define SWITCH_IN TOUCH_LOGO
 
 bool light_on = false;
+//uint32_t timer_start;
+//uint32_t timer_interrupt;
 
 // Global variables
 //APP_TIMER_DEF(sample_timer);
@@ -83,7 +85,13 @@ static void play_tone(uint16_t frequency) {
 // TODO: Take everything in here and change it to a toggle on/off system and use an interrupt
 //static void sample_timer_callback(void* _unused) {
 static void interrupt_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action){
-  //nrf_gpiote_event_clear(NRF_GPIOTE_EVENTS_IN_0);
+  // timer_interrupt = read_timer();
+  //printf("interrupt time: %ld \n", timer_interrupt);
+
+  //uint32_t diff = timer_interrupt - timer_start;
+  // printf("difference: %ld \n", diff);
+  
+  //if (diff > 20000) {
     if (light_on) {
       light_on = false;
       printf("Switch: OFF\n");
@@ -91,6 +99,7 @@ static void interrupt_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t ac
       light_on = true;
       printf("Switch: ON\n");
     }
+    //  }
 }
 
 
@@ -105,22 +114,56 @@ static void gpio_init(void) {
   nrf_gpio_pin_set(LED_BLUE);
   nrf_gpio_pin_set(LED_GREEN);
 
+  nrf_gpio_pin_clear(SWITCH_IN);
   ret_code_t err_code = nrf_drv_gpiote_init();
   APP_ERROR_CHECK(err_code);
 
   nrf_drv_gpiote_in_config_t pin_config = GPIOTE_CONFIG_IN_SENSE_LOTOHI(true);
-  pin_config.pull = NRF_GPIO_PIN_PULLDOWN;
+  pin_config.pull = NRF_GPIO_PIN_NOPULL;
 
   // Initializes input pins
   //nrf_gpio_cfg_input(SWITCH_IN, NRF_GPIO_PIN_NOPULL);
   err_code = nrf_drv_gpiote_in_init(SWITCH_IN, &pin_config, interrupt_handler);
   APP_ERROR_CHECK(err_code);
-  nrf_drv_gpiote_in_event_enable(SWITCH_IN, true);
   //nrf_gpiote_int_enable(NRF_GPIOTE_INT_IN0_MASK);
-  //nrf_gpiote_event_configure(NRF_GPIOTE_EVENTS_IN_0, SWITCH_IN, NRF_GPIOTE_POLARITY_LOTOHI); 
+  //nrf_gpiote_event_configure(NRF_GPIOTE_EVENTS_IN_0, SWITCH_IN, NRF_GPIOTE_POLARITY_LOTOHI);
   NVIC_EnableIRQ(GPIOTE_IRQn);
   NVIC_SetPriority(GPIOTE_IRQn, 2);
+  nrf_drv_gpiote_in_event_enable(SWITCH_IN, true);
 }
+
+/*static void touch_sensing(void) {
+ nrf_drv_gpiote_in_event_disable(SWITCH_IN);
+
+ // output, write 0, input, take time stamp
+ // timestamp now and when interrupt occurs, subtract to find time, use read_time
+ //nrf_drv_gpiote_out_config_t pin_out_config = GPIOTE_CONFIG_OUT_SIMPLE(false);
+ 
+ // ret_code_t err_code = nrf_drv_gpiote_out_init(SWITCH_IN, &pin_out_config);
+ //APP_ERROR_CHECK(err_code);
+ //nrf_drv_gpiote_out_clear(SWITCH_IN);
+
+ //nrf_gpio_cfg_output(SWITCH_IN);  
+
+  // Set LEDs off initially
+ // nrf_gpio_pin_clear(SWITCH_IN);
+
+ //nrf_gpio_cfg_input(SWITCH_IN, NRF_GPIO_PIN_NOPULL);
+ 
+  //nrf_drv_gpiote_in_config_t  pin_config = GPIOTE_CONFIG_IN_SENSE_LOTOHI(true);
+  // pin_config.pull = NRF_GPIO_PIN_NOPULL;
+ 
+  //ret_code_t err_code = nrf_drv_gpiote_in_init(SWITCH_IN, &pin_config, interrupt_handler);
+  //APP_ERROR_CHECK(err_code);
+
+ timer_start = read_timer();
+ printf("init time: %ld \n", timer_start);
+ 
+ // call this 10 times a sec
+ // if too long, cancel event (timeout timer)
+ 
+ nrf_drv_gpiote_in_event_enable(SWITCH_IN, true);
+ }*/
 
 
 // Callback function to check the temperature
@@ -210,16 +253,17 @@ int main(void) {
   //nrf_delay_ms(1000);
   virtual_timer_start_repeated(1000000, check_temp_and_accel);
   virtual_timer_start_repeated(2000000, print_temp);
+  // virtual_timer_start_repeated(100000, touch_sensing);
   // Start off by doing an initialized printing of the temp then afterward it just updates the temp without changing the timer
   char str[50];
   snprintf(str, sizeof(str), "%.2f  ", TEMP);
   init_print_string(str, 0.5);
   
 
-  NRF_GPIOTE->CONFIG[0] = (1 | (2 << 8)) | (2 << 16);
-  NVIC_EnableIRQ(GPIOTE_IRQn);
-  NVIC_SetPriority(GPIOTE_IRQn, 0);
-  NRF_GPIOTE->INTENSET |= 1;
+  // NRF_GPIOTE->CONFIG[0] = (1 | (2 << 8)) | (2 << 16);
+  // NVIC_EnableIRQ(GPIOTE_IRQn);
+  //NVIC_SetPriority(GPIOTE_IRQn, 0);
+  //NRF_GPIOTE->INTENSET |= 1;
 
   // loop forever
   while (1) {
