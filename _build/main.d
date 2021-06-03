@@ -39,7 +39,7 @@ _build/main.o: main.c \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/nrfx.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/integration/nrfx/nrfx_config.h \
  ../../nrf52x-base//make/config/nrf52833/config/sdk_config.h \
- /home/smilkova/Desktop/ce346project/nu-microbit-base/software/boards/microbit_v2/./app_config.h \
+ /home/will/Desktop/nu-microbit-base/software/boards/microbit_v2/./app_config.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/nrfx_common.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/mdk/nrf52833.h \
@@ -93,7 +93,7 @@ _build/main.o: main.c \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/util/app_error.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/components/libraries/delay/nrf_delay.h \
  led_matrix.h \
- /home/smilkova/Desktop/ce346project/nu-microbit-base/software/boards/microbit_v2/./microbit_v2.h \
+ /home/will/Desktop/nu-microbit-base/software/boards/microbit_v2/./microbit_v2.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_gpio.h \
  virtual_timer.h virtual_timer_linked_list.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/hal/nrf_gpiote.h \
