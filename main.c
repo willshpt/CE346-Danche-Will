@@ -97,8 +97,9 @@ static void interrupt_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t ac
   uint32_t timer_interrupt = read_timer();
   //printf("interrupt time: %ld \n", timer_interrupt);
   uint32_t diff = timer_interrupt - timer_start;
-  printf("difference: %ld \n", diff);
-  if (diff > 2000) {
+  //printf("difference: %ld \n", diff);
+  if (diff < 4000 && diff > 1000) {
+    //printf("difference: %ld \n", diff);
     if(timer_interrupt - last_on > 500000){
       last_on = timer_interrupt;
     if (light_on) {
@@ -138,7 +139,7 @@ static void gpio_init(void) {
   APP_ERROR_CHECK(err_code);
   NVIC_EnableIRQ(GPIOTE_IRQn);
   NVIC_SetPriority(GPIOTE_IRQn, 7);
-  nrf_drv_gpiote_in_event_enable(SWITCH_IN, true);
+  // nrf_drv_gpiote_in_event_enable(SWITCH_IN, true);
 }
 
 
@@ -173,7 +174,7 @@ static void check_temp_and_accel(void) {
   // If the lamp is on, it changes depending on how hot it is
   else{
     nrf_gpio_pin_clear(LED_BLUE);
-    if(TEMP > 25){
+    if(TEMP > 25 && TEMP < 27){
       nrf_gpio_pin_set(LED_BLUE);
       nrf_gpio_pin_set(LED_RED);
       nrf_gpio_pin_clear(LED_GREEN);
