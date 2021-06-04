@@ -97,9 +97,8 @@ static void interrupt_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t ac
   uint32_t timer_interrupt = read_timer();
   //printf("interrupt time: %ld \n", timer_interrupt);
   uint32_t diff = timer_interrupt - timer_start;
-  //printf("difference: %ld \n", diff);
-  
-  if (diff > 20000) {
+  printf("difference: %ld \n", diff);
+  if (diff > 2000) {
     if(timer_interrupt - last_on > 500000){
       last_on = timer_interrupt;
     if (light_on) {
@@ -112,6 +111,7 @@ static void interrupt_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t ac
   }
   }
   nrf_gpio_cfg_input(SWITCH_IN, NRF_GPIO_PIN_NOPULL);
+  touch_sensing();
 }
 
 
@@ -137,7 +137,7 @@ static void gpio_init(void) {
   err_code = nrf_drv_gpiote_in_init(SWITCH_IN, &pin_config, interrupt_handler);
   APP_ERROR_CHECK(err_code);
   NVIC_EnableIRQ(GPIOTE_IRQn);
-  NVIC_SetPriority(GPIOTE_IRQn, 2);
+  NVIC_SetPriority(GPIOTE_IRQn, 7);
   nrf_drv_gpiote_in_event_enable(SWITCH_IN, true);
 }
 
@@ -179,7 +179,7 @@ static void check_temp_and_accel(void) {
     else{
       nrf_gpio_pin_set(LED_GREEN);
     }
-    if(TEMP > 28){
+    if(TEMP > 27){
       nrf_gpio_pin_clear(LED_RED);
     }
     else{
@@ -224,10 +224,10 @@ int main(void) {
 
   // Initialize and start virtual timers
   virtual_timer_init();
-  //nrf_delay_ms(1000);
   virtual_timer_start_repeated(1000000, check_temp_and_accel);
   virtual_timer_start_repeated(2000000, print_temp);
-  virtual_timer_start_repeated(100000, touch_sensing);
+  //virtual_timer_start_repeated(100000, touch_sensing);
+  touch_sensing();
   // Start off by doing an initialized printing of the temp then afterward it just updates the temp without changing the timer
   char str[50];
   snprintf(str, sizeof(str), "%.2f  ", TEMP);
