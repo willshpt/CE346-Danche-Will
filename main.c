@@ -174,12 +174,16 @@ static void check_temp_and_accel(void) {
   else{
     nrf_gpio_pin_clear(LED_BLUE);
     if(TEMP > 25){
+      nrf_gpio_pin_set(LED_BLUE);
+      nrf_gpio_pin_set(LED_RED);
       nrf_gpio_pin_clear(LED_GREEN);
     }
     else{
       nrf_gpio_pin_set(LED_GREEN);
     }
     if(TEMP > 27){
+      nrf_gpio_pin_set(LED_BLUE);
+      nrf_gpio_pin_set(LED_GREEN);
       nrf_gpio_pin_clear(LED_RED);
     }
     else{

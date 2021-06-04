@@ -33,7 +33,7 @@ _build/led_matrix.o: led_matrix.c \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/nrfx.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/integration/nrfx/nrfx_config.h \
  ../../nrf52x-base//make/config/nrf52833/config/sdk_config.h \
- /home/will/Desktop/nu-microbit-base/software/boards/microbit_v2/./app_config.h \
+ /home/smilkova/Desktop/ce346project/nu-microbit-base/software/boards/microbit_v2/./app_config.h \
  ../../nrf52x-base//sdk/nrf5_sdk_16.0.0/modules/nrfx/drivers/nrfx_common.h \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1/include/stdint.h \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/stdint.h \
@@ -81,5 +81,5 @@ _build/led_matrix.o: led_matrix.c \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/strings.h \
  /opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include/sys/string.h \
  font.h \
- /home/will/Desktop/nu-microbit-base/software/boards/microbit_v2/./microbit_v2.h \
+ /home/smilkova/Desktop/ce346project/nu-microbit-base/software/boards/microbit_v2/./microbit_v2.h \
  virtual_timer.h virtual_timer_linked_list.h
